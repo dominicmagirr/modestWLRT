@@ -1,0 +1,25 @@
+---
+title: "modestWLRT tutorial"
+author: "Dominic Magirr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+  fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{modestWLRT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Weighted logrank test
+
+```{r}
+library(modestWLRT)
+```
