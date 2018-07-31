@@ -18,6 +18,7 @@ install_github("dominicmagirr/modestWLRT")
 
 Please read the vignette.
 
-```{r eval=FALSE}
+```{r}
+library(modestWLRT)
 vignette("modestwlrt_vignette")
 ```
