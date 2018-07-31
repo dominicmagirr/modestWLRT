@@ -90,7 +90,8 @@ library(modestWLRT)</code></pre>
 <div id="simulate-example-data-set" class="section level1">
 <h1>Simulate example data set</h1>
 <p>You can use the function <code>delayed_effect_sim</code> to simulate an example data set from a 2-arm RCT. Survival times on the control arm are exponentially distributed with median <code>med_c</code>. Survival times on the experimental arm follow a 2-piece exponential distibution: from time zero up to time <code>delay</code> the event rate is <code>rate_e_1</code>; thereafter the event rate is <code>rate_e_2</code>. Patient recruitment times follow a simple power distribution:</p>
-<p><span class="math display">\[pr(\text{recruited before t}) = (t / \text{rec_period})^{\text{rec_power}}, ~~t \in (0, \text{rec_period}).\]</span> Data cut-off happens at time <code>max_cal_t</code>, and any patients still alive have their survival time censored.</p>
+<p>pr(recruited before t) = (t / <code>rec_period</code>)^<code>rec_power</code>, for t in (0, <code>rec_period</code>).</p>
+<p>Data cut-off happens at time <code>max_cal_t</code>, and any patients still alive have their survival time censored.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">example_data =<span class="st"> </span><span class="kw">delayed_effect_sim</span>(<span class="dt">n_c =</span> <span class="dv">10</span>,
                                   <span class="dt">n_e =</span> <span class="dv">10</span>,
                                   <span class="dt">rec_period =</span> <span class="dv">12</span>,
@@ -103,26 +104,26 @@ library(modestWLRT)</code></pre>
 
 example_data
 <span class="co">#&gt;     time event        group</span>
-<span class="co">#&gt; 1  12.98  TRUE      control</span>
-<span class="co">#&gt; 2  25.77 FALSE      control</span>
-<span class="co">#&gt; 3   7.11  TRUE      control</span>
-<span class="co">#&gt; 4   7.31  TRUE      control</span>
-<span class="co">#&gt; 5   2.10  TRUE      control</span>
-<span class="co">#&gt; 6   5.76  TRUE      control</span>
-<span class="co">#&gt; 7  12.13  TRUE      control</span>
-<span class="co">#&gt; 8   0.55  TRUE      control</span>
-<span class="co">#&gt; 9  28.59 FALSE      control</span>
-<span class="co">#&gt; 10 18.85  TRUE      control</span>
-<span class="co">#&gt; 11 32.62  TRUE experimental</span>
-<span class="co">#&gt; 12 31.43 FALSE experimental</span>
-<span class="co">#&gt; 13 24.59 FALSE experimental</span>
-<span class="co">#&gt; 14 10.49  TRUE experimental</span>
-<span class="co">#&gt; 15 30.66 FALSE experimental</span>
-<span class="co">#&gt; 16  0.21  TRUE experimental</span>
-<span class="co">#&gt; 17 24.56 FALSE experimental</span>
-<span class="co">#&gt; 18  0.62  TRUE experimental</span>
-<span class="co">#&gt; 19 31.91 FALSE experimental</span>
-<span class="co">#&gt; 20 32.09 FALSE experimental</span></code></pre></div>
+<span class="co">#&gt; 1   6.10  TRUE      control</span>
+<span class="co">#&gt; 2  25.18  TRUE      control</span>
+<span class="co">#&gt; 3  24.71  TRUE      control</span>
+<span class="co">#&gt; 4   4.19  TRUE      control</span>
+<span class="co">#&gt; 5   4.31  TRUE      control</span>
+<span class="co">#&gt; 6  26.06 FALSE      control</span>
+<span class="co">#&gt; 7   2.29  TRUE      control</span>
+<span class="co">#&gt; 8   7.94  TRUE      control</span>
+<span class="co">#&gt; 9  13.60  TRUE      control</span>
+<span class="co">#&gt; 10 15.17  TRUE      control</span>
+<span class="co">#&gt; 11  5.79  TRUE experimental</span>
+<span class="co">#&gt; 12 32.75 FALSE experimental</span>
+<span class="co">#&gt; 13 34.71 FALSE experimental</span>
+<span class="co">#&gt; 14 24.89  TRUE experimental</span>
+<span class="co">#&gt; 15  1.98  TRUE experimental</span>
+<span class="co">#&gt; 16 25.47 FALSE experimental</span>
+<span class="co">#&gt; 17  0.07  TRUE experimental</span>
+<span class="co">#&gt; 18 26.43 FALSE experimental</span>
+<span class="co">#&gt; 19 27.33  TRUE experimental</span>
+<span class="co">#&gt; 20 32.11 FALSE experimental</span></code></pre></div>
 </div>
 <div id="risk-table" class="section level1">
 <h1>Risk table</h1>
@@ -131,18 +132,20 @@ example_data
 
 example_risk_table
 <span class="co">#&gt;        t n_e d_e n_c d_c  n d l l_c l_e</span>
-<span class="co">#&gt; 1   0.21  10   1  10   0 20 1 0   0   0</span>
-<span class="co">#&gt; 2   0.55   9   0  10   1 19 1 0   0   0</span>
-<span class="co">#&gt; 3   0.62   9   1   9   0 18 1 0   0   0</span>
-<span class="co">#&gt; 4   2.10   8   0   9   1 17 1 0   0   0</span>
-<span class="co">#&gt; 5   5.76   8   0   8   1 16 1 0   0   0</span>
-<span class="co">#&gt; 6   7.11   8   0   7   1 15 1 0   0   0</span>
-<span class="co">#&gt; 7   7.31   8   0   6   1 14 1 0   0   0</span>
-<span class="co">#&gt; 8  10.49   8   1   5   0 13 1 0   0   0</span>
-<span class="co">#&gt; 9  12.13   7   0   5   1 12 1 0   0   0</span>
-<span class="co">#&gt; 10 12.98   7   0   4   1 11 1 0   0   0</span>
-<span class="co">#&gt; 11 18.85   7   0   3   1 10 1 8   2   6</span>
-<span class="co">#&gt; 20 32.62   1   1   0   0  1 1 0   0   0</span></code></pre></div>
+<span class="co">#&gt; 1   0.07  10   1  10   0 20 1 0   0   0</span>
+<span class="co">#&gt; 2   1.98   9   1  10   0 19 1 0   0   0</span>
+<span class="co">#&gt; 3   2.29   8   0  10   1 18 1 0   0   0</span>
+<span class="co">#&gt; 4   4.19   8   0   9   1 17 1 0   0   0</span>
+<span class="co">#&gt; 5   4.31   8   0   8   1 16 1 0   0   0</span>
+<span class="co">#&gt; 6   5.79   8   1   7   0 15 1 0   0   0</span>
+<span class="co">#&gt; 7   6.10   7   0   7   1 14 1 0   0   0</span>
+<span class="co">#&gt; 8   7.94   7   0   6   1 13 1 0   0   0</span>
+<span class="co">#&gt; 9  13.60   7   0   5   1 12 1 0   0   0</span>
+<span class="co">#&gt; 10 15.17   7   0   4   1 11 1 0   0   0</span>
+<span class="co">#&gt; 11 24.71   7   0   3   1 10 1 0   0   0</span>
+<span class="co">#&gt; 12 24.89   7   1   2   0  9 1 0   0   0</span>
+<span class="co">#&gt; 13 25.18   6   0   2   1  8 1 3   1   2</span>
+<span class="co">#&gt; 17 27.33   4   1   0   0  4 1 3   0   3</span></code></pre></div>
 </div>
 <div id="calculate-weights" class="section level1">
 <h1>Calculate weights</h1>
@@ -155,21 +158,23 @@ example_risk_table
                              <span class="dt">plot_weights =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modest_weights<span class="op">$</span>risk_table
 <span class="co">#&gt;        t n_e d_e n_c d_c  n d l l_c l_e     c    w     C</span>
-<span class="co">#&gt; 1   0.21  10   1  10   0 20 1 0   0   0  1.00 1.00  0.00</span>
-<span class="co">#&gt; 2   0.55   9   0  10   1 19 1 0   0   0  1.00 1.06 -0.06</span>
-<span class="co">#&gt; 3   0.62   9   1   9   0 18 1 0   0   0  1.00 1.12 -0.12</span>
-<span class="co">#&gt; 4   2.10   8   0   9   1 17 1 0   0   0  1.00 1.19 -0.19</span>
-<span class="co">#&gt; 5   5.76   8   0   8   1 16 1 0   0   0  1.00 1.27 -0.27</span>
-<span class="co">#&gt; 6   7.11   8   0   7   1 15 1 0   0   0  1.00 1.36 -0.36</span>
-<span class="co">#&gt; 7   7.31   8   0   6   1 14 1 0   0   0  1.00 1.46 -0.46</span>
-<span class="co">#&gt; 8  10.49   8   1   5   0 13 1 0   0   0  1.00 1.58 -0.58</span>
-<span class="co">#&gt; 9  12.13   7   0   5   1 12 1 0   0   0  0.82 1.58 -0.77</span>
-<span class="co">#&gt; 10 12.98   7   0   4   1 11 1 0   0   0  0.67 1.58 -0.91</span>
-<span class="co">#&gt; 11 18.85   7   0   3   1 10 1 8   2   6  0.52 1.58 -1.07</span>
-<span class="co">#&gt; 20 32.62   1   1   0   0  1 1 0   0   0 -1.07 1.58 -2.65</span></code></pre></div>
+<span class="co">#&gt; 1   0.07  10   1  10   0 20 1 0   0   0  1.00 1.00  0.00</span>
+<span class="co">#&gt; 2   1.98   9   1  10   0 19 1 0   0   0  1.00 1.06 -0.06</span>
+<span class="co">#&gt; 3   2.29   8   0  10   1 18 1 0   0   0  1.00 1.12 -0.12</span>
+<span class="co">#&gt; 4   4.19   8   0   9   1 17 1 0   0   0  1.00 1.19 -0.19</span>
+<span class="co">#&gt; 5   4.31   8   0   8   1 16 1 0   0   0  1.00 1.27 -0.27</span>
+<span class="co">#&gt; 6   5.79   8   1   7   0 15 1 0   0   0  1.00 1.36 -0.36</span>
+<span class="co">#&gt; 7   6.10   7   0   7   1 14 1 0   0   0  1.00 1.46 -0.46</span>
+<span class="co">#&gt; 8   7.94   7   0   6   1 13 1 0   0   0  1.00 1.58 -0.58</span>
+<span class="co">#&gt; 9  13.60   7   0   5   1 12 1 0   0   0  0.82 1.58 -0.77</span>
+<span class="co">#&gt; 10 15.17   7   0   4   1 11 1 0   0   0  0.67 1.58 -0.91</span>
+<span class="co">#&gt; 11 24.71   7   0   3   1 10 1 0   0   0  0.52 1.58 -1.07</span>
+<span class="co">#&gt; 12 24.89   7   1   2   0  9 1 0   0   0  0.34 1.58 -1.24</span>
+<span class="co">#&gt; 13 25.18   6   0   2   1  8 1 3   1   2  0.14 1.58 -1.44</span>
+<span class="co">#&gt; 17 27.33   4   1   0   0  4 1 3   0   3 -0.25 1.58 -1.84</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modest_weights<span class="op">$</span>p</code></pre></div>
 <div class="figure">
-<img src="data:image/png;base64,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" alt="Scores/weights from a modestWLRT." />
+<img src="data:image/png;base64,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" alt="Scores/weights from a modestWLRT." />
 <p class="caption">Scores/weights from a modestWLRT.</p>
 </div>
 </div>
@@ -177,7 +182,7 @@ example_risk_table
 <h1>Test statistics</h1>
 <p>Given the risk table with the corresponding weights, it is simple to calculate the standardized weighted logrank statistic. Larger values of Z correspond to longer survival times on the experimental arm.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_zs</span>(modest_weights)
-<span class="co">#&gt; [1] 2.091993</span></code></pre></div>
+<span class="co">#&gt; [1] 2.2587</span></code></pre></div>
 </div>
 
 

@@ -47,7 +47,8 @@ devtools::load_all("..")
 
 You can use the function `delayed_effect_sim` to simulate an example data set from a 2-arm RCT. Survival times on the control arm are exponentially distributed with median `med_c`. Survival times on the experimental arm follow a 2-piece exponential distibution: from time zero up to time `delay` the event rate is `rate_e_1`; thereafter the event rate is `rate_e_2`. Patient recruitment times follow a simple power distribution:
 
-$$pr(\text{recruited before t}) = (t / \text{rec_period})^{\text{rec_power}}, ~~t \in (0, \text{rec_period}).$$
+pr(recruited before t) = (t / `rec_period`)^`rec_power`, for t in (0, `rec_period`).
+
 Data cut-off happens at time `max_cal_t`, and any patients still alive have their survival time censored.
 
 ```{r}
