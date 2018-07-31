@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Dominic Magirr" />
+
+<meta name="date" content="2018-07-31" />
+
+<title>Modestly-weighted logrank test: basic tutorial</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Modestly-weighted logrank test: basic tutorial</h1>
+<h4 class="author"><em>Dominic Magirr</em></h4>
+<h4 class="date"><em>2018-07-31</em></h4>
+
+
+
+<div id="installation" class="section level1">
+<h1>Installation</h1>
+<p>You can use <code>devtools::install_github()</code> to get the package from <a href="https://github.com/dominicmagirr/modestWLRT">GitHub</a>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
+<span class="kw">library</span>(devtools)
+<span class="kw">install_github</span>(<span class="st">&quot;dominicmagirr/modestWLRT&quot;</span>)</code></pre></div>
+</div>
+<div id="load-packages" class="section level1">
+<h1>Load packages</h1>
+<pre><code>library(dplyr)
+library(ggplot2)
+library(modestWLRT)</code></pre>
+</div>
+<div id="simulate-example-data-set" class="section level1">
+<h1>Simulate example data set</h1>
+<p>You can use the function <code>delayed_effect_sim</code> to simulate an example data set from a 2-arm RCT. Survival times on the control arm are exponentially distributed with median <code>med_c</code>. Survival times on the experimental arm follow a 2-piece exponential distibution: from time zero up to time <code>delay</code> the event rate is <code>rate_e_1</code>; thereafter the event rate is <code>rate_e_2</code>. Patient recruitment times follow a simple power distribution:</p>
+<p><span class="math display">\[pr(\text{recruited before t}) = (t / \text{rec_period})^{\text{rec_power}}, ~~t \in (0, \text{rec_period}).\]</span> Data cut-off happens at time <code>max_cal_t</code>, and any patients still alive have their survival time censored.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">example_data =<span class="st"> </span><span class="kw">delayed_effect_sim</span>(<span class="dt">n_c =</span> <span class="dv">10</span>,
+                                  <span class="dt">n_e =</span> <span class="dv">10</span>,
+                                  <span class="dt">rec_period =</span> <span class="dv">12</span>,
+                                  <span class="dt">rec_power =</span> <span class="dv">1</span>,
+                                  <span class="dt">med_c =</span> <span class="dv">15</span>,
+                                  <span class="dt">rate_e_1 =</span> <span class="kw">log</span>(<span class="dv">2</span>) <span class="op">/</span><span class="st"> </span><span class="dv">15</span>,
+                                  <span class="dt">rate_e_2 =</span> <span class="fl">0.03</span>,
+                                  <span class="dt">delay =</span> <span class="dv">6</span>,
+                                  <span class="dt">max_cal_t  =</span> <span class="dv">36</span>)
+
+example_data
+<span class="co">#&gt;     time event        group</span>
+<span class="co">#&gt; 1  12.98  TRUE      control</span>
+<span class="co">#&gt; 2  25.77 FALSE      control</span>
+<span class="co">#&gt; 3   7.11  TRUE      control</span>
+<span class="co">#&gt; 4   7.31  TRUE      control</span>
+<span class="co">#&gt; 5   2.10  TRUE      control</span>
+<span class="co">#&gt; 6   5.76  TRUE      control</span>
+<span class="co">#&gt; 7  12.13  TRUE      control</span>
+<span class="co">#&gt; 8   0.55  TRUE      control</span>
+<span class="co">#&gt; 9  28.59 FALSE      control</span>
+<span class="co">#&gt; 10 18.85  TRUE      control</span>
+<span class="co">#&gt; 11 32.62  TRUE experimental</span>
+<span class="co">#&gt; 12 31.43 FALSE experimental</span>
+<span class="co">#&gt; 13 24.59 FALSE experimental</span>
+<span class="co">#&gt; 14 10.49  TRUE experimental</span>
+<span class="co">#&gt; 15 30.66 FALSE experimental</span>
+<span class="co">#&gt; 16  0.21  TRUE experimental</span>
+<span class="co">#&gt; 17 24.56 FALSE experimental</span>
+<span class="co">#&gt; 18  0.62  TRUE experimental</span>
+<span class="co">#&gt; 19 31.91 FALSE experimental</span>
+<span class="co">#&gt; 20 32.09 FALSE experimental</span></code></pre></div>
+</div>
+<div id="risk-table" class="section level1">
+<h1>Risk table</h1>
+<p>The function <code>get_risk_table</code> takes a data frame produced from <code>delayed_effect_sim</code> (or a data frame of the same form) and turns it into a risk table. This tells you how many patients were at risk / had an event / censored on each arm, at each event time.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">example_risk_table =<span class="st"> </span><span class="kw">get_risk_table</span>(example_data)
+
+example_risk_table
+<span class="co">#&gt;        t n_e d_e n_c d_c  n d l l_c l_e</span>
+<span class="co">#&gt; 1   0.21  10   1  10   0 20 1 0   0   0</span>
+<span class="co">#&gt; 2   0.55   9   0  10   1 19 1 0   0   0</span>
+<span class="co">#&gt; 3   0.62   9   1   9   0 18 1 0   0   0</span>
+<span class="co">#&gt; 4   2.10   8   0   9   1 17 1 0   0   0</span>
+<span class="co">#&gt; 5   5.76   8   0   8   1 16 1 0   0   0</span>
+<span class="co">#&gt; 6   7.11   8   0   7   1 15 1 0   0   0</span>
+<span class="co">#&gt; 7   7.31   8   0   6   1 14 1 0   0   0</span>
+<span class="co">#&gt; 8  10.49   8   1   5   0 13 1 0   0   0</span>
+<span class="co">#&gt; 9  12.13   7   0   5   1 12 1 0   0   0</span>
+<span class="co">#&gt; 10 12.98   7   0   4   1 11 1 0   0   0</span>
+<span class="co">#&gt; 11 18.85   7   0   3   1 10 1 8   2   6</span>
+<span class="co">#&gt; 20 32.62   1   1   0   0  1 1 0   0   0</span></code></pre></div>
+</div>
+<div id="calculate-weights" class="section level1">
+<h1>Calculate weights</h1>
+<p>From the risk table, you can calculate the scores / weights from a modestWLRT. The argument <code>delay</code> is used to specify how long the scores are kept constant. See the paper</p>
+<p><a href="http://arxiv.org/abs/1807.11097" class="uri">http://arxiv.org/abs/1807.11097</a></p>
+<p>for details.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modest_weights =<span class="st"> </span><span class="kw">add_weights</span>(example_risk_table, 
+                             <span class="dt">method =</span> <span class="st">&quot;fixed_c&quot;</span>, 
+                             <span class="dt">delay =</span> <span class="dv">12</span>, 
+                             <span class="dt">plot_weights =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modest_weights<span class="op">$</span>risk_table
+<span class="co">#&gt;        t n_e d_e n_c d_c  n d l l_c l_e     c    w     C</span>
+<span class="co">#&gt; 1   0.21  10   1  10   0 20 1 0   0   0  1.00 1.00  0.00</span>
+<span class="co">#&gt; 2   0.55   9   0  10   1 19 1 0   0   0  1.00 1.06 -0.06</span>
+<span class="co">#&gt; 3   0.62   9   1   9   0 18 1 0   0   0  1.00 1.12 -0.12</span>
+<span class="co">#&gt; 4   2.10   8   0   9   1 17 1 0   0   0  1.00 1.19 -0.19</span>
+<span class="co">#&gt; 5   5.76   8   0   8   1 16 1 0   0   0  1.00 1.27 -0.27</span>
+<span class="co">#&gt; 6   7.11   8   0   7   1 15 1 0   0   0  1.00 1.36 -0.36</span>
+<span class="co">#&gt; 7   7.31   8   0   6   1 14 1 0   0   0  1.00 1.46 -0.46</span>
+<span class="co">#&gt; 8  10.49   8   1   5   0 13 1 0   0   0  1.00 1.58 -0.58</span>
+<span class="co">#&gt; 9  12.13   7   0   5   1 12 1 0   0   0  0.82 1.58 -0.77</span>
+<span class="co">#&gt; 10 12.98   7   0   4   1 11 1 0   0   0  0.67 1.58 -0.91</span>
+<span class="co">#&gt; 11 18.85   7   0   3   1 10 1 8   2   6  0.52 1.58 -1.07</span>
+<span class="co">#&gt; 20 32.62   1   1   0   0  1 1 0   0   0 -1.07 1.58 -2.65</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modest_weights<span class="op">$</span>p</code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="Scores/weights from a modestWLRT." />
+<p class="caption">Scores/weights from a modestWLRT.</p>
+</div>
+</div>
+<div id="test-statistics" class="section level1">
+<h1>Test statistics</h1>
+<p>Given the risk table with the corresponding weights, it is simple to calculate the standardized weighted logrank statistic. Larger values of Z correspond to longer survival times on the experimental arm.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_zs</span>(modest_weights)
+<span class="co">#&gt; [1] 2.091993</span></code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
