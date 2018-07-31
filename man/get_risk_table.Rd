@@ -6,3 +6,19 @@
 \usage{
 get_risk_table(df)
 }
+\value{
+A risk table with columns:
+\code{t} the event times, in ascending order
+\code{n_e} the number of patients at risk on the experimental treatment arm just prior to \code{t}.
+\code{n_c} the number of patients at risk on the control treatment arm just prior to \code{t}.
+\code{d_e} the number of events on the experimental arm at time \code{t}.
+\code{d_c} the number of events on the control arm at time \code{t}.
+\code{n} = \code{n_e} + \code{n_c}.
+\code{d} = \code{d_e} + \code{d_c}.
+\code{l} = \code{l_e} + \code{l_c}.
+\code{l_e} the number of patients on the experimental treatment arm who censored after the current \code{t} but before 
+the subsequent \code{t}.
+}
+\description{
+\code{get_risk_table} Calculate risk table for a simulated two-arm survival data set.
+}

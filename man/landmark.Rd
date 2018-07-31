@@ -6,3 +6,13 @@
 \usage{
 landmark(df, time)
 }
+\arguments{
+\item{{time}}{The (patient) times to perform the landmark analysis at. E.g., survival at \code{time = c(6,12,18)} months.}
+}
+\value{
+@code{z} the standardized test statistic. Large values indicate better survival on the experimental arm.
+}
+\description{
+\code{landmark} performs a landmark analysis at a specified (patient) time. Based on Kaplan-Meier estimates of survival 
+on the two treatment arms.
+}

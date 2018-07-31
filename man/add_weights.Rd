@@ -7,18 +7,26 @@
 add_weights(risk_table, method = "fixed_c", delay = 6, rho = 0,
   gamma = 0, plot_weights = FALSE)
 }
-\description{
-\code{add_weights} Calculate weights for a weighted log-rank test and add them to the risk table.
-\param{risk_table} A risk table produced by the function \code{get_risk_table}.
-\param{method} The type of weighted log-rank test.
+\arguments{
+\item{{risk_table}}{A risk table produced by the function \code{get_risk_table}.}
+
+\item{{method}}{The type of weighted log-rank test.
 \code{"fixed_c"} means that the scores \code{c} are fixed at 1 while \code{t < delay}. Thereafter, the weights \code{w} remain fixed.
 \code{"fh"} is a Fleming-Harrington test with parameters \code{rho} and \code{gamma}.
-\code{"step"} means that the weight \code{w} is fixed at 0 while \code{t < delay}. Thereafter, the weight is fixed at 1. 
-\param{delay} Parameter used by the \code{"fixed_c"} and \code{"step"} methods. 
-\param{rho} First parameter for the \code{"fh"} method.
-\param{gamma} Second parameter for the \code{"fh"} method.
-\return A risk table consisting of the original \code{risk_table} with 3 additional columns:
+\code{"step"} means that the weight \code{w} is fixed at 0 while \code{t < delay}. Thereafter, the weight is fixed at 1.}
+
+\item{{delay}}{Parameter used by the \code{"fixed_c"} and \code{"step"} methods.}
+
+\item{{rho}}{First parameter for the \code{"fh"} method.}
+
+\item{{gamma}}{Second parameter for the \code{"fh"} method.}
+}
+\value{
+A risk table consisting of the original \code{risk_table} with 3 additional columns:
 \code{c} The scores in the score test corresponding to events (uncensored observations).
 \code{w} The weights for the weighted log-rank test. 
 \code{C} The scores in the score test corresponding to censored observations.
+}
+\description{
+\code{add_weights} Calculate weights for a weighted log-rank test and add them to the risk table.
 }

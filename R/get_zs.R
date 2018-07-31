@@ -1,12 +1,14 @@
 #' Get (standardized) score and weighted log-rank statistics.
 #' 
 #' \code{get_zs} Calculate (standardized) score and weighted log-rank statistics from risk table (with weights).
-#' \param{risk_table} A risk table with weights produced by the functions \code{get_risk_table} and \code{add_weights}.
-#' \return A vector of length 2: the standardized weighted log-rank statistic; the standardized score statistic.
+#' @param{risk_table} A risk table with weights produced by the functions \code{get_risk_table} and \code{add_weights}.
+#' @return A vector of length 2: the standardized weighted log-rank statistic; the standardized score statistic.
 #' @export
 #' 
 #' 
-get_zs = function(risk_table){
+get_zs = function(risk_table, method = "u"){
+  
+  if (class(risk_table) == "list") risk_table = risk_table$risk_table
   
   n_e = max(risk_table$n_e)
   n_c = max(risk_table$n_c)
@@ -25,6 +27,8 @@ get_zs = function(risk_table){
   
   z_u = u / sqrt(v_u)
 
+  if (method == "u") return(z_u)
+  if (method == "s") return(z_s)
   c(z_u = z_u,
     z_s = z_s)
   

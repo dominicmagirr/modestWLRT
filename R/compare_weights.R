@@ -39,13 +39,13 @@ compare_weights = function(weights_list_list, design){
   real_weights = weights_list_list[which_weights]
   landmarks = weights_list_list[!which_weights]
 
-  df = modestWLRT::get_df(med_c = design$med_c,
-                          rate_e_1 = design$rate_e_1,
-                          rate_e_2 = design$rate_e_2,
-                          rec_period = design$rec_period,
-                          rec_power = design$rec_power,
-                          delay = design$delay,
-                          max_cal_t = design$max_cal_t)
+  df = modestWLRT::delayed_effect_sim(med_c = design$med_c,
+                                      rate_e_1 = design$rate_e_1,
+                                      rate_e_2 = design$rate_e_2,
+                                      rec_period = design$rec_period,
+                                      rec_power = design$rec_power,
+                                      delay = design$delay,
+                                      max_cal_t = design$max_cal_t)
 
 
   risk_table = get_risk_table(df)

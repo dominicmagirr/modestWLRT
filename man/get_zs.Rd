@@ -4,10 +4,14 @@
 \alias{get_zs}
 \title{Get (standardized) score and weighted log-rank statistics.}
 \usage{
-get_zs(risk_table)
+get_zs(risk_table, method = "u")
+}
+\arguments{
+\item{{risk_table}}{A risk table with weights produced by the functions \code{get_risk_table} and \code{add_weights}.}
+}
+\value{
+A vector of length 2: the standardized weighted log-rank statistic; the standardized score statistic.
 }
 \description{
 \code{get_zs} Calculate (standardized) score and weighted log-rank statistics from risk table (with weights).
-\param{risk_table} A risk table with weights produced by the functions \code{get_risk_table} and \code{add_weights}.
-\return A vector of length 2: the standardized weighted log-rank statistic; the standardized score statistic.
 }

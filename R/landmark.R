@@ -2,11 +2,11 @@
 #' 
 #' \code{landmark} performs a landmark analysis at a specified (patient) time. Based on Kaplan-Meier estimates of survival 
 #' on the two treatment arms.
-#' \param{df} Data frame containing simulated survival data set in standard format. 
+#' @param{df} Data frame containing simulated survival data set in standard format. 
 #' Three columns: survival time \code{time}, whether patient has an \code{event} (1 = yes, 0 = censored), 
 #' and treatment \code{group" (\code{control" or \code{experimental}).
-#' \param{time} The (patient) times to perform the landmark analysis at. E.g., survival at \code{time = c(6,12,18)} months.
-#' \return \code{z} the standardized test statistic. Large values indicate better survival on the experimental arm.
+#' @param{time} The (patient) times to perform the landmark analysis at. E.g., survival at \code{time = c(6,12,18)} months.
+#' @return @code{z} the standardized test statistic. Large values indicate better survival on the experimental arm.
 #' @export
 
 
@@ -15,9 +15,9 @@ landmark = function(df, time){
 
   ## use survival::survfit to do KM estimation by group:
   
-  info = summary(survfit(Surv(time, event) ~ group, 
-                         data = df),
-                 time = time)
+  info = summary(survival::survfit(Surv(time, event) ~ group, 
+                                   data = df),
+                                   time = time)
   
   ## extract survival probabilities with standard errors:
   

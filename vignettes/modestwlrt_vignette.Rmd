@@ -1,0 +1,111 @@
+---
+title: "Modestly-weighted logrank test: basic tutorial"
+author: "Dominic Magirr"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+        fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Installation
+
+You can use `devtools::install_github()` to get the package from [GitHub](https://github.com/dominicmagirr/modestWLRT):
+
+```{r eval=FALSE}
+install.packages("devtools")
+library(devtools)
+install_github("dominicmagirr/modestWLRT")
+```
+
+
+# Load packages
+
+```
+library(dplyr)
+library(ggplot2)
+library(modestWLRT)
+```
+
+```{r include=FALSE}
+library(dplyr)
+library(ggplot2)
+devtools::load_all("..")
+```
+
+# Simulate example data set
+
+You can use the function `delayed_effect_sim` to simulate an example data set from a 2-arm RCT. Survival times on the control arm are exponentially distributed with median `med_c`. Survival times on the experimental arm follow a 2-piece exponential distibution: from time zero up to time `delay` the event rate is `rate_e_1`; thereafter the event rate is `rate_e_2`. Patient recruitment times follow a simple power distribution:
+
+$$pr(\text{recruited before t}) = (t / \text{rec_period})^{\text{rec_power}}, ~~t \in (0, \text{rec_period}).$$
+Data cut-off happens at time `max_cal_t`, and any patients still alive have their survival time censored.
+
+```{r}
+example_data = delayed_effect_sim(n_c = 10,
+                                  n_e = 10,
+                                  rec_period = 12,
+                                  rec_power = 1,
+                                  med_c = 15,
+                                  rate_e_1 = log(2) / 15,
+                                  rate_e_2 = 0.03,
+                                  delay = 6,
+                                  max_cal_t  = 36)
+
+example_data
+```
+
+
+# Risk table
+
+The function `get_risk_table` takes a data frame produced from `delayed_effect_sim` (or a data frame of the same form) and turns it into a risk table. This tells you how many patients were at risk / had an event / censored on each arm, at each event time.
+
+```{r}
+example_risk_table = get_risk_table(example_data)
+
+example_risk_table
+```
+
+# Calculate weights
+
+From the risk table, you can calculate the scores / weights from a modestWLRT. The argument `delay` is used to specify how long the scores are kept constant. See the paper
+
+http://arxiv.org/abs/1807.11097
+
+for details.
+
+```{r}
+modest_weights = add_weights(example_risk_table, 
+                             method = "fixed_c", 
+                             delay = 12, 
+                             plot_weights = TRUE)
+```
+
+```{r}
+modest_weights$risk_table
+```
+
+```{r fig.cap = "Scores/weights from a modestWLRT."}
+modest_weights$p
+```
+
+# Test statistics
+
+Given the risk table with the corresponding weights, it is simple to calculate the standardized weighted logrank statistic. Larger values of Z correspond to longer survival times on the experimental arm.
+
+```{r}
+get_zs(modest_weights)
+```
+
+
+
+

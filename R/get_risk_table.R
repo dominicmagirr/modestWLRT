@@ -1,10 +1,10 @@
 #' Convert simulated survival data set into risk table format.
 #' 
 #' \code{get_risk_table} Calculate risk table for a simulated two-arm survival data set.
-#' \param{df} Data frame containing simulated survival data set in standard format. 
+#' @param{df} Data frame containing simulated survival data set in standard format. 
 #' Three columns: survival time \code{time}, whether patient has an \code{event} (1 = yes, 0 = censored), 
 #' and treatment \code{group" (\code{control" or \code{experimental}).
-#' \return A risk table with columns:
+#' @return A risk table with columns:
 #' \code{t} the event times, in ascending order
 #' \code{n_e} the number of patients at risk on the experimental treatment arm just prior to \code{t}.
 #' \code{n_c} the number of patients at risk on the control treatment arm just prior to \code{t}.
@@ -76,7 +76,7 @@ get_risk_table = function(df){
   # where is.na(n_e) == FALSE.
   # similarly for n_c when is.na(n_c) == TRUE.
   
-  risk_table = risk_table %>% fill(n_e, n_c, .direction = "up")
+  risk_table = risk_table %>% tidyr::fill(n_e, n_c, .direction = "up")
   
   # at the bottom of the risk table, it's still possible that is.na(n_e) == TRUE if
   # all subsequent events/censorings are from the control arm. In this case the 
