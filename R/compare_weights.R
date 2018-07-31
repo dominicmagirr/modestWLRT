@@ -1,16 +1,4 @@
-#' Compare various methods to a simulated data set
-#'
-#' \code{compare_weights} will simulate a data set (according to \code{design})
-#' and will calculate standardized z-statistics for a variety of methods
-#' \param{weights_list_list} A list, where each element is a list describing a method. For example,
-#' \code{list(method="fixed_c",delay=6)} or \code{list(method="landmark", time = 20)}.
-#' \param{design} A list of design information, containing:
-#' \code{med_c}, \code{rate_e_1}, \code{rate_e_2}, \code{rec_period}, \code{rec_power}, \code{delay}, \code{max_cal_t}
-#' \return A vector of standardized test statistics, one for each method in \code{weights_list_list}.
-#' @export
-
 ############################################
-
 add_weights_list = function(weights_list, risk_table){
 
   if (weights_list$method == "fh"){
@@ -30,6 +18,16 @@ add_weights_list = function(weights_list, risk_table){
 }
 
 ###########################################
+#' Compare various methods to a simulated data set
+#'
+#' \code{compare_weights} will simulate a data set (according to \code{design})
+#' and will calculate standardized z-statistics for a variety of methods
+#' @param{weights_list_list} A list, where each element is a list describing a method. For example,
+#' \code{list(method="fixed_c",delay=6)} or \code{list(method="landmark", time = 20)}.
+#' @param{design} A list of design information, containing:
+#' \code{med_c}, \code{rate_e_1}, \code{rate_e_2}, \code{rec_period}, \code{rec_power}, \code{delay}, \code{max_cal_t}
+#' @return A vector of standardized test statistics, one for each method in \code{weights_list_list}.
+#' @export
 
 compare_weights = function(weights_list_list, design){
 

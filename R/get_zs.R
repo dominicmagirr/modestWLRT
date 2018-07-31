@@ -2,7 +2,8 @@
 #' 
 #' \code{get_zs} Calculate (standardized) score and weighted log-rank statistics from risk table (with weights).
 #' @param{risk_table} A risk table with weights produced by the functions \code{get_risk_table} and \code{add_weights}.
-#' @return A vector of length 2: the standardized weighted log-rank statistic; the standardized score statistic.
+#' @param{method} If \code{method = "u"} then the logrank formula is used. If \code{method = "s"} then the score test formula is used.
+#' @return The standardized weighted log-rank statistic.
 #' @export
 #' 
 #' 
