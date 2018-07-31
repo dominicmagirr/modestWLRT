@@ -13,3 +13,11 @@ install.packages("devtools")
 library(devtools)
 install_github("dominicmagirr/modestWLRT")
 ```
+
+## Basic usage
+
+Please read the vignette.
+
+```{r eval=FALSE}
+vignette("modestwlrt_vignette")
+```
