@@ -16,8 +16,6 @@ install_github("dominicmagirr/modestWLRT")
 
 ## Basic usage
 
-Please read the vignette.
-
 ```{r}
 library(modestWLRT)
 vignette("modestwlrt_vignette")
