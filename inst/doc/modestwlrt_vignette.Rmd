@@ -3,7 +3,7 @@ title: "Modestly-weighted logrank test: basic tutorial"
 author: "Dominic Magirr"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::html_vignette:
+  pdf_document:
         fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
