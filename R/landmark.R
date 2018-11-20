@@ -6,7 +6,7 @@
 #' Three columns: survival time \code{time}, whether patient has an \code{event} (1 = yes, 0 = censored), 
 #' and treatment \code{group" (\code{control" or \code{experimental}).
 #' @param{time} The (patient) times to perform the landmark analysis at. E.g., survival at \code{time = c(6,12,18)} months.
-#' @return @code{z} the standardized test statistic. Large values indicate better survival on the experimental arm.
+#' @return \code{z} the standardized test statistic. Large values indicate better survival on the experimental arm.
 #' @export
 
 

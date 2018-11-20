@@ -45,16 +45,21 @@ add_weights = function(risk_table,
     
     ## Use Condition (4) in Leton and Zuluaga:
     
-    if (max_j > 1){
+    if (max_j > 0){
       
-      for (j in 2:max_j){
+      for (j in 1:max_j){
         
         if (risk_table$n[j] == risk_table$d[j]){
           
           risk_table$w[j] = 0
           
         }
-        else{
+        else if (j == 1){
+          
+          risk_table$w[j] = risk_table$n[1] / (risk_table$n[1] - risk_table$d[1])
+          
+        }
+        else{ 
           
           risk_table$w[j] = risk_table$w[j-1] * risk_table$n[j] / (risk_table$n[j] - risk_table$d[j])
           
