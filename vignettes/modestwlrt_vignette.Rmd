@@ -25,6 +25,7 @@ You can use `devtools::install_github()` to get the package from [GitHub](https:
 ```{r eval=FALSE}
 install.packages("devtools")
 library(devtools)
+install_github("dominicmagirr/expectedevents")
 install_github("dominicmagirr/modestWLRT")
 ```
 
@@ -34,6 +35,7 @@ install_github("dominicmagirr/modestWLRT")
 ```
 library(dplyr)
 library(ggplot2)
+library(expectedevents)
 library(modestWLRT)
 ```
 
@@ -41,9 +43,12 @@ library(modestWLRT)
 library(dplyr)
 library(ggplot2)
 devtools::load_all("..")
+devtools::load_all("~/AAC/tools/expectedevents")
 ```
 
-# Simulate example data set
+# Perform a mWLRT
+
+## Simulate example data set
 
 You can use the function `delayed_effect_sim` to simulate an example data set from a 2-arm RCT. Survival times on the control arm are exponentially distributed with median `med_c`. Survival times on the experimental arm follow a 2-piece exponential distibution: from time zero up to time `delay` the event rate is `rate_e_1`; thereafter the event rate is `rate_e_2`. Patient recruitment times follow a simple power distribution:
 
@@ -52,6 +57,7 @@ pr(recruited before t) = (t / `rec_period`)^`rec_power`, for t in (0, `rec_perio
 Data cut-off happens at time `max_cal_t`, and any patients still alive have their survival time censored.
 
 ```{r}
+set.seed(459)
 example_data = delayed_effect_sim(n_c = 10,
                                   n_e = 10,
                                   rec_period = 12,
@@ -66,7 +72,7 @@ example_data
 ```
 
 
-# Risk table
+## Risk table
 
 The function `get_risk_table` takes a data frame produced from `delayed_effect_sim` (or a data frame of the same form) and turns it into a risk table. This tells you how many patients were at risk / had an event / censored on each arm, at each event time.
 
@@ -76,7 +82,7 @@ example_risk_table = get_risk_table(example_data)
 example_risk_table
 ```
 
-# Calculate weights
+## Calculate weights
 
 From the risk table, you can calculate the scores / weights from a modestWLRT. The argument `delay` is used to specify how long the scores are kept constant. See the paper
 
@@ -99,13 +105,108 @@ modest_weights$risk_table
 modest_weights$p
 ```
 
-# Test statistics
+## Test statistics
 
 Given the risk table with the corresponding weights, it is simple to calculate the standardized weighted logrank statistic. Larger values of Z correspond to longer survival times on the experimental arm.
 
 ```{r}
 get_zs(modest_weights)
 ```
+
+
+# Approximate non-centrality parameter / power
+
+To approximate the non-centrality parameter (and therefore power) of a mWLRT, we split the test statistic up into smaller chunks:
+
+$$U = \sum_{k=0}^{\infty} U_k$$
+
+where, for some time interval $t'$,
+
+$$ U_k = \sum_{j:~t_j \in (kt', kt'+t')} ~~w_j\left( d_{0,j} - d_j\frac{n_{0,j}}{n_j}\right).$$
+
+Let $e_k$ and $\theta_k$ denote the number of events and log-hazard ratio, respectively, during the time interval $(kt', kt' + t')$. Approximately, for large $e_k$ and small $\theta_k$,
+
+$$ U_k \sim N(\tilde{w}_k \theta_k I_k, ~\tilde{w}_k^2 I_k), $$
+where $I_k = e_k R / (R+1)^2$ for $R:1$ allocation, and $\tilde{w}_k$ denotes an "average" weight during $(kt', kt' + t')$.
+
+
+When designing the study we make assumptions about survival distributions on each arm, as well as the recruitment distribution. We can use this to calculate 
+
+$$\tilde{w}_k = 1 / S^* \left(\min\left\lbrace kt' + 0.5t', t^* \right\rbrace \right),$$
+where $S^*$ denotes the assumed survival distribution for the pooled sample. We also use numerical integration to find
+
+$$E(e_k) = N \times \pi_k$$
+
+where $\pi_k$ denotes the probability of a randomly chosen patient having an event during $(kt', kt' + t')$. 
+
+Putting these pieces together, the standardized logrank statistic $U / \text{var} (U)$ is approximately normally distribution with non-centrality parameter
+
+$$ \sqrt{N} \times \frac{\sum_k \tilde{w}_k \theta_k \pi_k}{\left( \sum_k  \tilde{w}_k^2 \pi_k \right)^{1/2}}.$$
+
+To do this in the `modestWLRT` package, we first specify recruitment assumptions. We assume that
+
+$$ pr(\text{recruited prior to time }r) = (r / R)^k $$
+where $R$ denotes the length of the recruitment period.
+
+
+```{r}
+recruitment_1 = list(n_0 = 100, 
+                     n_1 = 100, 
+                     r_period = 12, 
+                     k = 1)
+
+```
+
+
+Next we specify the survival distributions on the two arms. This is done via piece-wise constant hazards. In this simple example, there are only two pieces. During period 1 (0 -- 6 months), the hazard rate is the same on both arms. During period 2 (6 months onwards), the hazard ratio is 0.5.
+
+
+```{r}
+model_1 = list(change_points = 6, 
+               lambdas_0 = c(log(2) / 15, log(2) / 15), 
+               lambdas_1 = c(log(2) / 15, log(2) / 30))
+
+```
+
+
+We want to evaluate the ncp/power for a sequence of pontential values for $t^*$.
+
+```{r}
+t_star_seq <- seq(2,36,2)
+```
+
+
+Finally, when calling `ncp_power`, we must also specify the calendar time of data cut-off (`dco`) and the number of pieces to split the log-rank test into (`length_t`). The larger `length_t`, the smaller $t'$.
+
+```{r}
+results <- ncp_power(t_star = t_star_seq, 
+                     model = model_1,
+                     recruitment = recruitment_1,
+                     dco = 36,
+                     length_t = 50)
+
+```
+
+The output is the approximate non-centrality parameter for each value of $t^*$...
+
+```{r}
+plot(t_star_seq, results$ncp, type = 'b')
+```
+
+...and corresponding power (by default for one-sided type 1 error rate of 2.5%):
+
+```{r}
+plot(t_star_seq, results$power, type = 'b')
+```
+
+
+
+In this case, the best choice of $t^*$ is about 22 months.
+
+
+
+
+
 
 
 

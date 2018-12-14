@@ -14,10 +14,12 @@
 landmark = function(df, time){
 
   ## use survival::survfit to do KM estimation by group:
+  fit <- survival::survfit(Surv(time, event) ~ group, data = df)
   
-  info = summary(survival::survfit(Surv(time, event) ~ group, 
-                                   data = df),
-                                   time = time)
+  if(any(min(fit$time[fit$n.risk == 1]) < time)) return(rep(NA, length(time)))
+  
+  info = summary(fit, time = time)
+  
   
   ## extract survival probabilities with standard errors:
   

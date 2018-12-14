@@ -99,12 +99,20 @@ ncp_power <- function(t_star,
   
   for (i in seq_along(ncp)){
     
-    weights_t_star <- purrr::map_dbl(mid_t, 
+    weights_t_star <- purrr::map_dbl(mid_t,
                                      w,
-                                     t_star = t_star[i], 
+                                     t_star = t_star[i],
                                      recruitment = recruitment,
                                      model = model_e)
     
+    # weights_t_star <- purrr::map_dbl(c(0, model_e$change_points), 
+    #                                  w,
+    #                                  t_star = t_star[i], 
+    #                                  recruitment = recruitment,
+    #                                  model = model_e)
+    # 
+    # weights_t_star <- weights_t_star[-length(weights_t_star)] + 0.5 * diff(weights_t_star)
+    # 
     weights_t_star <- c(weights_t_star, 0)
     
     log_hr <- log(model_e$lambdas_1 / model_e$lambdas_0)

@@ -22,8 +22,13 @@ delayed_effect_sim = function(n_c = 100,
                               rate_e_1 = log(2) / 9,
                               rate_e_2 = 0.04,
                               delay = 6,
-                              max_cal_t  = 36){
+                              max_cal_t  = 36,
+                              n_events = NULL){
 
+  if (is.null(max_cal_t) && is.null(n_events)) stop("either max_cal_t or n_events must be specified.")
+  if ((!is.null(max_cal_t)) && (!is.null(n_events))) stop("one of max_cal_t and n_events must be NULL.")
+  if (is.null(max_cal_t) && (n_events > n_c + n_e)) stop("number of events not reached.")
+  
   # simulate recruitment times from power model:
 
   rec_c = rec_period * runif(n_c) ^ (1 / rec_power)
@@ -44,10 +49,14 @@ delayed_effect_sim = function(n_c = 100,
   cal_t_c = rec_c + t_c
   cal_t_e = rec_e + t_e
 
+  if (is.null(max_cal_t)){
+    max_cal_t <- sort(c(cal_t_c, cal_t_e))[n_events]
+  }
+  
   # does the patient have an event before the data cut-off:
 
-  event_c = cal_t_c < max_cal_t
-  event_e = cal_t_e < max_cal_t
+  event_c = cal_t_c <= max_cal_t
+  event_e = cal_t_e <= max_cal_t
 
   # if patient's event time is censored, calculate their follow-up time:
 
