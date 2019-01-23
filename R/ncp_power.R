@@ -28,8 +28,8 @@ s_bar <- function(t, recruitment, model){
   a_0 <- recruitment$n_0 / (recruitment$n_0 + recruitment$n_1)
   a_1 <- 1 - a_0
   
-  s_0 <- expectedevents::surv_pieces_simple(t, model$change_points, model$lambdas_0)
-  s_1 <- expectedevents::surv_pieces_simple(t, model$change_points, model$lambdas_1)
+  s_0 <- expectedevents:::surv_pieces_simple(t, model$change_points, model$lambdas_0)
+  s_1 <- expectedevents:::surv_pieces_simple(t, model$change_points, model$lambdas_1)
   
   a_0 * s_0 + a_1 * s_1
   
@@ -105,14 +105,7 @@ ncp_power <- function(t_star,
                                      recruitment = recruitment,
                                      model = model_e)
     
-    # weights_t_star <- purrr::map_dbl(c(0, model_e$change_points), 
-    #                                  w,
-    #                                  t_star = t_star[i], 
-    #                                  recruitment = recruitment,
-    #                                  model = model_e)
-    # 
-    # weights_t_star <- weights_t_star[-length(weights_t_star)] + 0.5 * diff(weights_t_star)
-    # 
+
     weights_t_star <- c(weights_t_star, 0)
     
     log_hr <- log(model_e$lambdas_1 / model_e$lambdas_0)
@@ -129,6 +122,6 @@ ncp_power <- function(t_star,
   list(ncp = ncp,
        power = power)
 }
-#
+
 
 
