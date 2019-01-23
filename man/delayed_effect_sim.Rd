@@ -6,7 +6,7 @@
 \usage{
 delayed_effect_sim(n_c = 100, n_e = 100, rec_period = 12,
   rec_power = 1, med_c = 15, rate_e_1 = log(2)/9, rate_e_2 = 0.04,
-  delay = 6, max_cal_t = 36)
+  delay = 6, max_cal_t = 36, n_events = NULL)
 }
 \arguments{
 \item{{n_c}}{Number of patients on control treatment.}

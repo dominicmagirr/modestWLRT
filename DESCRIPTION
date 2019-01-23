@@ -7,7 +7,7 @@ Maintainer: Dominic Magirr <d.magirr@gmail.com>
 Description: Functions for implementing modestly-weighted logrank tests, as described in http://arxiv.org/abs/1807.11097
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Imports: dplyr,
     ggplot2
 Suggests: knitr,
