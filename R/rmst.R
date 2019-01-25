@@ -17,15 +17,18 @@ rmst = function(df, time){
   ## use survival::survfit to do KM estimation by group:
   fit <- survival::survfit(Surv(time, event) ~ group, data = df)
   
-  if(any(min(fit$time[fit$n.risk == 1]) < time)) return(NA)
-  
-  ## use survRM2:: to do RMST estimation by group:
-  
-  results <- rmst2(time = df$time, 
-                   status = as.numeric(df$event), 
-                   arm = ifelse(df$group == "control", 0, 1),
-                   tau = time)
-  
+  if(any(min(fit$time[fit$n.risk == 1]) < time)) {
+    
+    return(NA)
+    
+  }
+  else {
+    ## use survRM2:: to do RMST estimation by group:
+    results <- rmst2(time = df$time, 
+                     status = as.numeric(df$event), 
+                     arm = ifelse(df$group == "control", 0, 1),
+                     tau = time)
+  }
   
   mean_1 <- results$RMST.arm1$rmst["Est."]
   se_1 <- results$RMST.arm1$rmst["se"]

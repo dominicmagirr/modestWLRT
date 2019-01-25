@@ -16,7 +16,9 @@ landmark = function(df, time){
   ## use survival::survfit to do KM estimation by group:
   fit <- survival::survfit(Surv(time, event) ~ group, data = df)
   
-  if(any(min(fit$time[fit$n.risk == 1]) < time)) return(rep(NA, length(time)))
+  no_data <- which(min(fit$time[fit$n.risk == 1]) < time)
+  time <- time[!no_data]
+  #if(any(min(fit$time[fit$n.risk == 1]) < time)) return(rep(NA, length(time)))
   
   info = summary(fit, time = time)
   
@@ -36,7 +38,7 @@ landmark = function(df, time){
                         se = sqrt(sum(se ^ 2))) %>%
               mutate(z = diff/se)
 
-  z_stats$z
+  c(z_stats$z, rep(NA, seq_along(no_data)))
   
 }
 
