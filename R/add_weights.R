@@ -32,7 +32,10 @@ add_weights = function(risk_table,
     risk_table$s = exp(cumsum(log(1 - risk_table$d / risk_table$n)))
     risk_table$s_minus = c(1, risk_table$s[-length(risk_table$s)])
     
-    max_weight <- 1 / risk_table$s[risk_table$t >= delay]
+    if (delay == 0) max_weight = 1
+    else { 
+      max_weight = 1 / max(risk_table$s[risk_table$t >= delay])
+    }
     
     # Modest (delay) weights:
     risk_table$w = pmin(1 / risk_table$s_minus, max_weight) 
