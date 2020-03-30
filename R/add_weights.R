@@ -23,7 +23,35 @@ add_weights = function(risk_table,
                        gamma = 0,
                        plot_weights = FALSE){
   
+  
   if (method == "fixed_c"){
+    
+    
+    
+    # Kaplan-Meier estimate of survival in the lumped data:
+    risk_table$s = exp(cumsum(log(1 - risk_table$d / risk_table$n)))
+    risk_table$s_minus = c(1, risk_table$s[-length(risk_table$s)])
+    
+    max_weight <- 1 / risk_table$s[risk_table$t >= delay]
+    
+    # Modest (delay) weights:
+    risk_table$w = pmin(1 / risk_table$s_minus, max_weight) 
+    risk_table$c = NA
+    risk_table$C = NA
+    
+    ## w --> C --> c
+    
+    # use Condition (3) in Leton and Zuluaga:
+    
+    for (j in 1:length(risk_table$t)){
+      
+      risk_table$C[j] = -with(risk_table, sum(w[1:j] * d[1:j] / n[1:j]))
+      risk_table$c[j] = risk_table$C[j] + risk_table$w[j]
+      
+    }
+    
+  }
+  else if (method == "fixed_c_orig"){
   
     risk_table$c = 1
     risk_table$w = 1
@@ -94,8 +122,10 @@ add_weights = function(risk_table,
     
     # Kaplan-Meier estimate of survival in the lumped data:
     risk_table$s = exp(cumsum(log(1 - risk_table$d / risk_table$n)))
+    risk_table$s_minus = c(1, risk_table$s[-length(risk_table$s)])
+    
     # Fleming-Harrington (rho, gamma) weights:
-    risk_table$w = risk_table$s ^ rho * (1 - risk_table$s) ^ gamma
+    risk_table$w = risk_table$s_minus ^ rho * (1 - risk_table$s_minus) ^ gamma
     risk_table$c = NA
     risk_table$C = NA
     
