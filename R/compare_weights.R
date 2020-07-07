@@ -43,17 +43,34 @@ compare_weights = function(weights_list_list, design){
   landmarks = weights_list_list[which_landmark]
   rmsts = weights_list_list[which_rmst]
 
-  df = modestWLRT::delayed_effect_sim(n_c = design$n_c,
-                                      n_e = design$n_e,
-                                      med_c = design$med_c,
-                                      rate_e_1 = design$rate_e_1,
-                                      rate_e_2 = design$rate_e_2,
-                                      rec_period = design$rec_period,
-                                      rec_power = design$rec_power,
-                                      delay = design$delay,
-                                      max_cal_t = design$max_cal_t,
-                                      n_events = design$n_events)
-
+  if (is.null(design$rate_c_1)){
+    df = modestWLRT::delayed_effect_sim(n_c = design$n_c,
+                                        n_e = design$n_e,
+                                        med_c = design$med_c,
+                                        rate_e_1 = design$rate_e_1,
+                                        rate_e_2 = design$rate_e_2,
+                                        rec_period = design$rec_period,
+                                        rec_power = design$rec_power,
+                                        delay = design$delay,
+                                        max_cal_t = design$max_cal_t,
+                                        n_events = design$n_events)
+  }
+  else {
+    df = modestWLRT::three_piece_sim(n_c = design$n_c,
+                                     n_e = design$n_e,
+                                     rate_c_1 = design$rate_c_1,
+                                     rate_c_2 = design$rate_c_2,
+                                     rate_c_3 = design$rate_c_3,
+                                     rate_e_1 = design$rate_e_1,
+                                     rate_e_2 = design$rate_e_2,
+                                     rate_e_3 = design$rate_e_3,
+                                     rec_period = design$rec_period,
+                                     rec_power = design$rec_power,
+                                     delay_1 = design$delay_1,
+                                     delay_2 = design$delay_2,
+                                     max_cal_t = design$max_cal_t,
+                                     n_events = design$n_events)
+  }
 
   risk_table = get_risk_table(df)
   
