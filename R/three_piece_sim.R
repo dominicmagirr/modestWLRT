@@ -1,3 +1,23 @@
+#' Simulate survival data from a two-arm trial
+#'
+#' \code{three_piece_sim} Simulate survival data: three-piece exponential vs. three-piece exponential.
+#' @param{n_c} Number of patients on control treatment.
+#' @param{n_e} Number of patients on experimental treatment.
+#' @param{rec_period} Recruitment period.
+#' @param{rec_power} Recruitment follows a power model. Pr(recruited before T) = (T / rec_period) ^ rec_power.
+#' @param{rate_c_1} Event rate during first period on control arm.
+#' @param{rate_c_2} Event rate during second period on control arm.
+#' @param{rate_c_3} Event rate during third period on control arm.
+#' @param{rate_e_1} Event rate during first period on experimental arm.
+#' @param{rate_e_2} Event rate during second period on experimental arm.
+#' @param{rate_e_3} Event rate during third period on experimental arm.
+#' @param{delay_1} Time of first change point.
+#' @param{delay_2} Time of second change point.
+#' @param{max_cal_t} Maximum calendar time, i.e., time from start of the trial to data cut-off.
+#' @return A data frame containing survival time, whether patient has event (1 = yes, 0 = censored), and treatment arm.
+#' @export
+
+
 three_piece_sim = function(n_c = 100,
                            n_e = 100,
                            rec_period = 12,
