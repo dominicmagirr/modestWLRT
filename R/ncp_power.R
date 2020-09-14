@@ -96,6 +96,8 @@ ncp_power <- function(t_star,
   
   ncp <- numeric(length(t_star))
   power <- numeric(length(t_star))
+  var_u <- numeric(length(t_star))
+  e_u <- numeric(length(t_star))
   
   for (i in seq_along(ncp)){
     
@@ -118,9 +120,14 @@ ncp_power <- function(t_star,
     power[i] <- pnorm(qnorm(alpha_one_sided),
                       mean = num / denom * sqrt(total_events * R / (R + 1) ^ 2))
     
+    e_u[i] <- sum(weights_t_star * log_hr * prop_events * total_events * R / (R + 1) ^ 2)
+    var_u[i] <- sum(weights_t_star ^ 2 * prop_events * total_events * R / (R + 1) ^ 2)
+    
   }
   list(ncp = ncp,
-       power = power)
+       power = power,
+       e_u = e_u,
+       var_u = var_u)
 }
 
 
