@@ -82,7 +82,8 @@ three_piece_sim = function(n_c = 100,
   
   df = data.frame(time = c(obs_t_c, obs_t_e),
                   event = c(event_c, event_e),
-                  group = rep(c("control", "experimental"), c(n_c, n_e)))
+                  group = rep(c("control", "experimental"), c(n_c, n_e)),
+                  rec = c(rec_c, rec_e))
   
   # round time to 2 dp
   df$time = round(df$time, 2)
