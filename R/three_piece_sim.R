@@ -88,7 +88,7 @@ three_piece_sim = function(n_c = 100,
   # round time to 2 dp
   df$time = round(df$time, 2)
   
-  df$max_cat_t = max_cal_t
+  df$max_cal_t = max_cal_t
   
   df
 }
