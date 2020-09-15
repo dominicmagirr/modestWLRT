@@ -127,7 +127,8 @@ ncp_power <- function(t_star,
   list(ncp = ncp,
        power = power,
        e_u = e_u,
-       var_u = var_u)
+       var_u = var_u,
+       total_events = total_events)
 }
 
 
